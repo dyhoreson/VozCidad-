@@ -1,0 +1,23 @@
+import { useEffect, useState } from 'react'
+import { Archive, BellRing, CheckCheck, Inbox, MessageSquareText, Send } from 'lucide-react'
+import { Link } from 'react-router-dom'
+import { SectionTitle } from '../../../components/ui/SectionTitle'
+import { useAuth } from '../../auth/AuthContext'
+import type { DirectRequest } from '../../../types'
+import { listProtocols, updateProtocol } from '../../../services/supabaseService'
+
+export function RequestInboxPage() {
+  const { user, profile, openAuthModal } = useAuth(); const [requests, setRequests] = useState<DirectRequest[]>([]); const [drafts, setDrafts] = useState<Record<string, string>>({}); const [error, setError] = useState(''); const [loading, setLoading] = useState(false)
+  const canManage = profile?.role === 'politico' || profile?.role === 'empresa' || profile?.role === 'admin'
+  const refresh = async () => { if (!user) return; setLoading(true); setError(''); try { setRequests(await listProtocols('recipient', user.id)) } catch (e) { setError(e instanceof Error ? e.message : 'Não foi possível carregar mensagens.') } finally { setLoading(false) } }
+  useEffect(() => { if (canManage) void refresh() }, [user?.id, canManage])
+  const setStatus = async (id: string, status: DirectRequest['status'], response?: string) => { setError(''); try { await updateProtocol(id, status, response); setDrafts(current => ({ ...current, [id]: '' })); await refresh() } catch (e) { setError(e instanceof Error ? e.message : 'Não foi possível atualizar o protocolo.') } }
+  if (!user) return <div className="page-wrap contact-gate"><Inbox size={28} /><h2>Caixa de entrada institucional</h2><p>Entre com a conta vinculada ao órgão ou gabinete para consultar mensagens direcionadas a ele.</p><button className="primary-button" onClick={openAuthModal}>Entrar na plataforma</button></div>
+  if (!canManage) return <div className="page-wrap contact-gate"><Inbox size={28} /><h2>Acesso restrito ao destinatário</h2><p>Esta caixa de entrada está disponível apenas para contas institucionais.</p><Link to="/contato" className="primary-button">Voltar ao canal direto</Link></div>
+  return <div className="page-wrap request-inbox-page"><div className="direct-contact-tabs"><Link to="/gestao">Painel de gestão</Link><span className="active"><Inbox size={15} /> Mensagens recebidas</span></div><SectionTitle eyebrow="CANAL INSTITUCIONAL" title="Mensagens recebidas" description="Leia, responda e arquive solicitações encaminhadas à sua conta." />
+    {error && <p role="alert" className="management-notice">{error}</p>}{loading ? <div className="empty-state">Carregando mensagens…</div> : requests.length ? <div className="request-inbox-list">{requests.map(item => <article className="request-inbox-card" key={item.id}><div className="inbox-card-header"><span className="protocol-number">{item.protocolNumber}</span><span className={`protocol-status protocol-${item.status.toLocaleLowerCase('pt-BR')}`}>{item.status}</span></div><div className="inbox-sender">De <strong>{item.userName}</strong> · {item.category} · {item.sentAt}</div><h3>{item.subject}</h3><p>{item.message}</p>{item.attachmentNames.length > 0 && <div className="inbox-attachments">Anexos: {item.attachmentNames.join(', ')}</div>}{item.response && <div className="protocol-response"><MessageSquareText size={15} /><div><strong>Resposta enviada</strong><p>{item.response}</p></div></div>}
+      <div className="inbox-actions">{item.status === 'Enviado' && <button onClick={() => void setStatus(item.id, 'Lido')}><BellRing size={14} /> Marcar como lido</button>}{item.status !== 'Arquivado' && item.status !== 'Respondido' && <button className="archive-action" onClick={() => void setStatus(item.id, 'Arquivado')}><Archive size={14} /> Arquivar</button>}</div>
+      {item.status !== 'Arquivado' && item.status !== 'Respondido' && <div className="inbox-reply"><label htmlFor={`reply-${item.id}`}>Resposta oficial</label><textarea id={`reply-${item.id}`} rows={2} value={drafts[item.id] ?? ''} onChange={event => setDrafts(current => ({ ...current, [item.id]: event.target.value }))} placeholder="Escreva uma resposta para o cidadão" /><button disabled={!(drafts[item.id] ?? '').trim()} onClick={() => void setStatus(item.id, 'Respondido', drafts[item.id])}><CheckCheck size={14} /> Enviar resposta</button></div>}
+    </article>)}</div> : <div className="protocol-empty"><Inbox size={23} /><strong>Caixa de entrada vazia</strong><p>Novas solicitações enviadas para sua conta aparecerão aqui.</p><Link to="/gestao" className="primary-button"><Send size={15} /> Voltar ao painel</Link></div>}
+  </div>
+}
