@@ -44,13 +44,13 @@ export async function analyzeLaw(input: {
         texto_original: input.text,
         modo: input.mode,
       }),
-      signal: AbortSignal.timeout(60_000),
+      signal: AbortSignal.timeout(120_000),
     })
   } catch (cause) {
     const reason = cause instanceof Error && cause.name === 'TimeoutError'
-      ? 'A explicação da proposta excedeu o tempo limite.'
-      : `Não foi possível conectar ao serviço de acessibilidade em ${API_BASE_URL}.`
-    throw new Error(`${reason} Verifique a configuração de VITE_AI_SERVICE_URL e tente novamente.`, { cause })
+      ? 'A IA demorou mais que o esperado para analisar esta proposta. Tente novamente em instantes.'
+      : `Não foi possível conectar ao serviço de acessibilidade em ${API_BASE_URL}. Verifique a configuração de VITE_AI_SERVICE_URL e tente novamente.`
+    throw new Error(reason, { cause })
   }
 
   let payload: unknown

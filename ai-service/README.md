@@ -31,7 +31,10 @@ O endpoint `POST /analisar-projeto` recebe JSON como:
 `perguntas_frequentes`, `analise_completa` e `texto_para_voz`.
 O endpoint legado `POST /analyze` continua disponível para clientes antigos.
 As interações são enviadas com `store=false` para não manter o conteúdo dos
-projetos no histórico remoto da API.
+projetos no histórico remoto da API. Para reduzir a espera, o serviço usa baixo
+esforço de raciocínio e limita o tamanho das respostas; o frontend aguarda até
+dois minutos para acomodar o tempo de inicialização da instância gratuita após
+um período sem uso.
 
 Configure `VITE_AI_SERVICE_URL` no frontend para apontar à URL publicada desta
 API. Em produção, ajuste `FRONTEND_ORIGINS` para os domínios exatos do portal.
