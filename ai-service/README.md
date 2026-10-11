@@ -30,6 +30,8 @@ O endpoint `POST /analisar-projeto` recebe JSON como:
 `modo` aceita `resumido` e `completo`. A resposta inclui `resumo_didatico`,
 `perguntas_frequentes`, `analise_completa` e `texto_para_voz`.
 O endpoint legado `POST /analyze` continua disponível para clientes antigos.
+Os endpoints `GET /` e `GET /health` retornam HTTP 200 com o estado do serviço
+e podem ser usados por monitores de disponibilidade como o UptimeRobot.
 As interações são enviadas com `store=false` para não manter o conteúdo dos
 projetos no histórico remoto da API. Para reduzir a espera, o serviço usa baixo
 esforço de raciocínio e limita o tamanho das respostas; o frontend aguarda até

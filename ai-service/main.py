@@ -34,6 +34,15 @@ app.add_middleware(
 )
 
 
+@app.get("/")
+def read_root() -> dict[str, str]:
+    """Health check endpoint for uptime monitors."""
+    return {
+        "status": "online",
+        "mensagem": "API do Voz Cidadã rodando perfeitamente!",
+    }
+
+
 class AnalyzeRequest(BaseModel):
     titulo: str = Field(min_length=3, max_length=300)
     texto_original: str = Field(min_length=20, max_length=50_000)
