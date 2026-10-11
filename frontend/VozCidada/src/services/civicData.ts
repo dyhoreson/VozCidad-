@@ -107,6 +107,40 @@ export async function castBillVote(billId: string, userId: string, choice: Popul
   const { error } = await client().from('bill_votes').upsert({ bill_id: billId, user_id: userId, vote_type: voteToDb[choice], updated_at: new Date().toISOString() }, { onConflict: 'bill_id,user_id' }); fail(error)
 }
 
+export async function listOfficialProposalVotes(proposalIds: number[], userId?: string): Promise<{
+  counts: Record<number, { favor: number; against: number; null: number }>
+  myVotes: Record<string, PopularVoteChoice>
+}> {
+  if (!proposalIds.length) return { counts: {}, myVotes: {} }
+  const db = client()
+  const [{ data: totals, error: totalsError }, { data: votes, error: votesError }] = await Promise.all([
+    db.from('legislative_proposal_vote_totals').select('proposal_id,favor,against,nulo').in('proposal_id', proposalIds),
+    userId
+      ? db.from('legislative_proposal_votes').select('proposal_id,vote_type').eq('user_id', userId).in('proposal_id', proposalIds)
+      : Promise.resolve({ data: [], error: null }),
+  ])
+  fail(totalsError)
+  fail(votesError)
+
+  const counts: Record<number, { favor: number; against: number; null: number }> = {}
+  for (const item of totals ?? []) {
+    counts[item.proposal_id] = { favor: item.favor ?? 0, against: item.against ?? 0, null: item.nulo ?? 0 }
+  }
+  const myVotes: Record<string, PopularVoteChoice> = {}
+  for (const vote of votes ?? []) myVotes[`camara-${vote.proposal_id}`] = voteMap[vote.vote_type]
+  return { counts, myVotes }
+}
+
+export async function castOfficialProposalVote(proposalId: number, userId: string, choice: PopularVoteChoice): Promise<void> {
+  const { error } = await client().from('legislative_proposal_votes').upsert({
+    proposal_id: proposalId,
+    user_id: userId,
+    vote_type: voteToDb[choice],
+    updated_at: new Date().toISOString(),
+  }, { onConflict: 'proposal_id,user_id' })
+  fail(error)
+}
+
 export async function createBill(input: { title: string; description: string; author: string; authorId: string; file: File }): Promise<void> {
   const db = client(); const path = `${input.authorId}/${crypto.randomUUID()}-${input.file.name.replace(/[^\w.-]/g, '_')}`
   const { error: uploadError } = await db.storage.from('bill-documents').upload(path, input.file, { contentType: 'application/pdf' }); fail(uploadError)

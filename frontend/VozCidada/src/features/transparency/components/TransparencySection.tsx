@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useState, type Dispatch, type SetStateAction } from 'react'
+import { Link } from 'react-router-dom'
 import { ArrowDownToLine, ArrowUpRight, Building2, ExternalLink, FileCheck2, Landmark, LoaderCircle, RefreshCw, Wallet } from 'lucide-react'
 import { fetchAllFederalDeputies, fetchDeputyExpenses, fetchRecentProposals, fetchSenators, type DeputyExpense, type FederalDeputy, type LegislativeProposal, type Senator } from '../../../services/legislativeService'
 import { fetchLocalTransparencyRecords, getLocalTransparencySources, type LocalTransparencyRecord, type LocalTransparencySource, type LocalTransparencySourceId } from '../../../services/localTransparencyService'
@@ -226,6 +227,7 @@ export function TransparencySection() {
         <p>{proposal.summary}</p>
         <small>{shortDate(proposal.presentedAt)}</small>
         <ExternalLinkButton href={proposal.url}>Ver na Câmara</ExternalLinkButton>
+        <Link className="open-data-link" to={`/votacoes/camara-${proposal.id}`}>Votar nesta proposta</Link>
       </article>)}</div>
     </section>
 

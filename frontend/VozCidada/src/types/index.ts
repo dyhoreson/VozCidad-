@@ -34,5 +34,5 @@ export type PopularVoteChoice = 'favor' | 'against' | 'null'
 export interface Bill {
   id: string; title: string; author: string; authorProfileId?: string; summary: string; status: BillStatus; deadline: string
   votes: { favor: number; against: number; abstain: number }; voteCounts?: { favor: number; against: number; null: number }
-  pdfUrl?: string; category?: string; updatedAt?: string
+  pdfUrl?: string; sourceUrl?: string; externalProposalId?: number; voteUnavailable?: boolean; category?: string; updatedAt?: string
 }

@@ -17,6 +17,7 @@ type ConfirmationRow = { incident_id: string; user_id: string; created_at: strin
 type HistoryRow = { id: string; incident_id: string; actor_id: string | null; status: IncidentDbStatus; response: string; created_at: string }
 type BillRow = { id: string; title: string; description: string; author: string; author_id: string | null; document_url: string | null; status: BillDbStatus; created_at: string }
 type BillVoteRow = { id: string; bill_id: string; user_id: string; vote_type: BillVoteDbType; created_at: string; updated_at: string }
+type LegislativeProposalVoteRow = { proposal_id: number; user_id: string; vote_type: BillVoteDbType; created_at: string; updated_at: string }
 type ProtocolRow = { id: string; protocol_number: string; user_id: string; recipient_id: string; type: ProtocolDbType; subject: string; message: string; attachment_urls: string[]; status: ProtocolDbStatus; response: string | null; responded_at: string | null; created_at: string; due_at: string; updated_at: string }
 
 export interface Database {
@@ -46,12 +47,18 @@ export interface Database {
         { foreignKeyName: 'bill_votes_bill_id_fkey'; columns: ['bill_id']; isOneToOne: false; referencedRelation: 'bills'; referencedColumns: ['id'] },
         { foreignKeyName: 'bill_votes_user_id_fkey'; columns: ['user_id']; isOneToOne: false; referencedRelation: 'profiles'; referencedColumns: ['id'] },
       ]>
+      legislative_proposal_votes: Table<LegislativeProposalVoteRow, { proposal_id: number; user_id: string; vote_type: BillVoteDbType; created_at?: string; updated_at?: string }, { vote_type?: BillVoteDbType; updated_at?: string }, [
+        { foreignKeyName: 'legislative_proposal_votes_user_id_fkey'; columns: ['user_id']; isOneToOne: false; referencedRelation: 'profiles'; referencedColumns: ['id'] },
+      ]>
       protocols: Table<ProtocolRow, { id?: string; protocol_number?: string; user_id: string; recipient_id: string; type: ProtocolDbType; subject: string; message: string; attachment_urls?: string[]; status?: ProtocolDbStatus; response?: string | null; responded_at?: string | null; created_at?: string; due_at?: string; updated_at?: string }, { status?: ProtocolDbStatus; response?: string | null; responded_at?: string | null; attachment_urls?: string[]; updated_at?: string }, [
         { foreignKeyName: 'protocols_user_id_fkey'; columns: ['user_id']; isOneToOne: false; referencedRelation: 'profiles'; referencedColumns: ['id'] },
         { foreignKeyName: 'protocols_recipient_id_fkey'; columns: ['recipient_id']; isOneToOne: false; referencedRelation: 'profiles'; referencedColumns: ['id'] },
       ]>
     }
-    Views: { bill_vote_totals: { Row: { bill_id: string; favor: number | null; against: number | null; nulo: number | null }; Relationships: [] } }
+    Views: {
+      bill_vote_totals: { Row: { bill_id: string; favor: number | null; against: number | null; nulo: number | null }; Relationships: [] }
+      legislative_proposal_vote_totals: { Row: { proposal_id: number; favor: number | null; against: number | null; nulo: number | null }; Relationships: [] }
+    }
     Functions: {
       confirm_incident: { Args: { p_incident_id: string }; Returns: number }
       update_incident_status: { Args: { p_incident_id: string; p_status: string; p_response: string }; Returns: IncidentRow }
