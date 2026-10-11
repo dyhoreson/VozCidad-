@@ -1,10 +1,24 @@
 @import "tailwindcss";
 @import "./styles/app.css";
 @import "./styles/map.css";
+@import "./styles/incident-map-modern.css";
 @import "./styles/mobile-overrides.css";
 @import "./styles/civic.css";
 @import "./styles/workflow.css";
 @import "./styles/civic-support.css";
 @import "./styles/routes.css";
+@import "./styles/button-system.css";
+@import "./styles/open-data.css";
+@import "./styles/representative-directory.css";
+@import "./styles/accessibility-reader.css";
+@import "./styles/law-details.css";
+@import "./styles/desktop-readable.css";
 
-:root{font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:#192a3d;background:#f6f8fb;font-synthesis:none;text-rendering:optimizeLegibility;-webkit-font-smoothing:antialiased;font-optical-sizing:auto;font-size:14px;font-weight:400;font-feature-settings:"ss01" on;--navy:#102b46;--blue:#245c91;--muted:#7b8795;--line:#e9edf2;--green:#26845d}*{box-sizing:border-box}body{margin:0;min-width:320px;min-height:100vh}button,input,select{font:inherit}button,a{-webkit-tap-highlight-color:transparent}button{cursor:pointer}a{color:inherit;text-decoration:none}button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid #80b9ef;outline-offset:2px}::selection{background:#d9eafa;color:var(--navy)}
+@theme {
+  --color-brand-dark: #163b27;
+  --color-brand-primary: #2e7d32;
+  --color-brand-light: #81c784;
+  --color-brand-bg: #f4f6f0;
+}
+
+:root{font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:var(--color-brand-dark);background:var(--color-brand-bg);font-synthesis:none;text-rendering:optimizeLegibility;-webkit-font-smoothing:antialiased;font-optical-sizing:auto;font-size:14px;font-weight:400;font-feature-settings:"ss01" on;--navy:var(--color-brand-dark);--blue:var(--color-brand-primary);--muted:#7b8795;--line:#e9edf2;--green:var(--color-brand-primary)}*{box-sizing:border-box}body{margin:0;min-width:320px;min-height:100vh;background:var(--color-brand-bg)}button,input,select{font:inherit}button,a{-webkit-tap-highlight-color:transparent}button{cursor:pointer}a{color:inherit;text-decoration:none}button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid #80b9ef;outline-offset:2px}::selection{background:#e4f1e4;color:var(--navy)}

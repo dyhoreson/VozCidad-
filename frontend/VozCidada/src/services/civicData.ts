@@ -1,5 +1,6 @@
 import { supabase } from '../lib/supabase'
 import type { Bill, Occurrence, OccurrenceStatus, PopularVoteChoice, WorkflowHistoryEntry } from '../types'
+import { isMissingProfileUfColumn } from './profileSchema'
 
 type Row = Record<string, any>
 const client = () => {
@@ -27,6 +28,16 @@ export async function listIncidents(): Promise<Occurrence[]> {
   return rows.map(row => mapIncident(row, grouped.get(row.id)))
 }
 
+export async function listMyIncidents(userId: string): Promise<Occurrence[]> {
+  const db = client()
+  const { data: rows, error } = await db.from('incidents').select('*').eq('user_id', userId).order('created_at', { ascending: false }); fail(error)
+  if (!rows?.length) return []
+  const { data: histories, error: historyError } = await db.from('incident_status_history').select('*, profiles(full_name)').in('incident_id', rows.map(row => row.id)).order('created_at', { ascending: true }); fail(historyError)
+  const grouped = new Map<string, Row[]>()
+  for (const history of histories ?? []) grouped.set(history.incident_id, [...(grouped.get(history.incident_id) ?? []), history])
+  return rows.map(row => mapIncident(row, grouped.get(row.id)))
+}
+
 export async function createIncident(input: Occurrence, userId: string, image?: File): Promise<Occurrence> {
   const db = client(); let imageUrl: string | null = null
   const { data: assignments, error: assignmentError } = await db.from('profiles').select('id').eq('role', 'empresa').eq('sector', input.category).or(`municipio.eq.${input.municipality},municipio.is.null`).limit(1)
@@ -50,9 +61,27 @@ export async function listMyIncidentConfirmations(userId: string): Promise<Set<s
   return new Set((data ?? []).map(row => row.incident_id))
 }
 
-export async function listInstitutionProfiles(): Promise<Array<{ id: string; name: string; role: string; municipality: string | null }>> {
-  const { data, error } = await client().from('profiles').select('id,full_name,role,municipio').in('role', ['politico', 'empresa']); fail(error)
-  return (data ?? []).map(row => ({ id: row.id, name: row.full_name || 'Perfil institucional', role: row.role, municipality: row.municipio }))
+export async function listInstitutionProfiles(): Promise<Array<{ id: string; name: string; role: string; municipality: string | null; state: string; stateFallback: boolean; avatarUrl?: string }>> {
+  const db = client()
+  const { data, error } = await db.from('profiles').select('id,full_name,role,municipio,uf,avatar_url').in('role', ['politico', 'empresa']).order('full_name')
+  if (isMissingProfileUfColumn(error)) {
+    const fallback = await db.from('profiles').select('id,full_name,role,municipio,avatar_url').in('role', ['politico', 'empresa']).order('full_name')
+    fail(fallback.error)
+    return (fallback.data ?? []).map(row => ({ id: row.id, name: row.full_name || 'Perfil institucional', role: row.role, municipality: row.municipio, state: 'RN', stateFallback: true, avatarUrl: row.avatar_url ?? undefined }))
+  }
+  fail(error)
+  return (data ?? []).map(row => ({ id: row.id, name: row.full_name || 'Perfil institucional', role: row.role, municipality: row.municipio, state: row.uf, stateFallback: false, avatarUrl: row.avatar_url ?? undefined }))
+}
+
+export async function getPoliticianCivicData(profileId: string) {
+  const db = client()
+  const [{ data: detail, error: detailError }, { data: projects, error: projectsError }, { data: amendments, error: amendmentsError }] = await Promise.all([
+    db.from('politician_details').select('*').eq('profile_id', profileId).maybeSingle(),
+    db.from('approved_projects').select('*').eq('politician_id', profileId).order('approved_at', { ascending: false }),
+    db.from('parliamentary_amendments').select('*').eq('politician_id', profileId).order('period', { ascending: false }),
+  ])
+  fail(detailError); fail(projectsError); fail(amendmentsError)
+  return { detail, projects: projects ?? [], amendments: amendments ?? [] }
 }
 
 export async function updateIncidentStatus(incidentId: string, status: OccurrenceStatus, response: string): Promise<void> {

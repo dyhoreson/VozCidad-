@@ -1,6 +1,6 @@
 import { supabase } from '../lib/supabase'
 import type { Bill, DirectRequestCategory, DirectRequestStatus, Occurrence, OccurrenceStatus, PopularVoteChoice } from '../types'
-import { castBillVote, confirmIncident, createBill, createIncident, listBills, listIncidents, listInstitutionProfiles, listMyIncidentConfirmations, updateIncidentStatus } from './civicData'
+import { castBillVote, confirmIncident, createBill, createIncident, getPoliticianCivicData, listBills, listIncidents, listInstitutionProfiles, listMyIncidentConfirmations, listMyIncidents, updateIncidentStatus } from './civicData'
 import { listProtocolRecipients, listProtocols, sendProtocol, updateProtocol } from './protocols'
 
 function requireClient() {
@@ -12,7 +12,9 @@ function requireClient() {
 export const getIncidents = (): Promise<Occurrence[]> => listIncidents()
 export { listIncidents }
 export { createIncident, confirmIncident, updateIncidentStatus, listMyIncidentConfirmations }
+export { listMyIncidents }
 export { listBills, castBillVote, listInstitutionProfiles }
+export { getPoliticianCivicData }
 export { listProtocols, listProtocolRecipients, sendProtocol }
 
 /** Projetos e resultados agregados; consulta também devolve a posição atual do usuário. */

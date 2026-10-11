@@ -1,0 +1,409 @@
+.law-project-card {
+  display: block;
+  color: inherit;
+  transition: border-color .18s ease, box-shadow .18s ease, transform .18s ease;
+}
+
+.law-project-card:hover {
+  border-color: #bdd4c5;
+  box-shadow: 0 8px 24px rgb(29 63 42 / 8%);
+  transform: translateY(-2px);
+}
+
+.law-project-card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 16px;
+  border-top: 1px solid #edf1ee;
+  padding-top: 12px;
+  color: #728276;
+  font-size: 13px;
+}
+
+.law-project-card-footer > span:last-child {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  color: #2f7048;
+  font-weight: 700;
+}
+
+.law-detail-page {
+  max-width: 1180px;
+}
+
+.law-back-button {
+  display: inline-flex;
+  min-height: 42px;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 18px;
+  border: 1px solid #d9e5dd;
+  border-radius: 8px;
+  background: #fff;
+  color: #315a40;
+  padding: 8px 14px;
+  font-weight: 700;
+}
+
+.law-back-button:hover {
+  background: #f1f7f2;
+}
+
+.law-detail {
+  display: grid;
+  gap: 20px;
+}
+
+.law-detail-heading {
+  border: 1px solid #e2eae4;
+  border-radius: 12px;
+  background: #fff;
+  padding: clamp(20px, 4vw, 36px);
+}
+
+.law-detail-meta {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.law-detail-meta .bill-tag {
+  margin: 0;
+}
+
+.law-detail-heading > h1 {
+  max-width: 900px;
+  margin: 17px auto 10px;
+  color: #203b2a;
+  font-size: clamp(26px, 4vw, 38px);
+  line-height: 1.2;
+  text-align: center;
+}
+
+.law-detail-author {
+  margin: 0;
+  color: #66786b;
+  text-align: center;
+}
+
+.law-detail-author strong {
+  color: #344f3c;
+}
+
+.law-detail-summary {
+  max-width: 900px;
+  margin: 24px auto 0;
+  border-top: 1px solid #edf1ee;
+  padding-top: 18px;
+}
+
+.law-detail-summary h2 {
+  margin: 0 0 7px;
+  color: #315a40;
+  font-size: 15px;
+}
+
+.law-detail-summary p {
+  margin: 0;
+  color: #52675a;
+  font-size: 16px;
+  line-height: 1.7;
+}
+
+.law-detail-tools {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(260px, 320px);
+  align-items: start;
+  gap: 18px;
+}
+
+.law-detail-tools > .accessibility-reader {
+  min-width: 0;
+  margin: 0;
+}
+
+.law-document-card {
+  display: grid;
+  justify-items: start;
+  gap: 15px;
+  border: 1px solid #dbe8dd;
+  border-radius: 12px;
+  background: linear-gradient(150deg, #f4faf5, #fff);
+  padding: 22px;
+}
+
+.law-document-icon {
+  display: grid;
+  width: 48px;
+  height: 48px;
+  place-items: center;
+  border-radius: 12px;
+  background: #e4f0e6;
+  color: #34764b;
+}
+
+.law-document-card > div:nth-child(2) > span {
+  color: #66806c;
+  font-size: 11px;
+  font-weight: 750;
+  letter-spacing: .08em;
+}
+
+.law-document-card h2 {
+  margin: 6px 0;
+  color: #29483a;
+  font-size: 19px;
+}
+
+.law-document-card p {
+  margin: 0;
+  color: #64766a;
+  font-size: 14px;
+  line-height: 1.55;
+}
+
+.law-document-actions {
+  display: grid;
+  width: 100%;
+  gap: 8px;
+}
+
+.law-document-actions a {
+  display: inline-flex;
+  min-height: 42px;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border: 1px solid #2f7048;
+  border-radius: 7px;
+  background: #2f7048;
+  color: #fff;
+  padding: 8px 12px;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.law-document-actions a + a {
+  background: #fff;
+  color: #2f7048;
+}
+
+.law-document-unavailable {
+  border-left: 3px solid #d2a34c;
+  padding-left: 10px;
+}
+
+.law-more-details {
+  overflow: hidden;
+  border: 1px solid #e2eae4;
+  border-radius: 10px;
+  background: #fff;
+}
+
+.law-more-details > summary {
+  display: flex;
+  min-height: 64px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  cursor: pointer;
+  padding: 14px 18px;
+  color: #64766a;
+  list-style: none;
+}
+
+.law-more-details > summary::-webkit-details-marker {
+  display: none;
+}
+
+.law-more-details > summary::after {
+  content: "+";
+  color: #2f7048;
+  font-size: 24px;
+  font-weight: 500;
+}
+
+.law-more-details[open] > summary::after {
+  content: "−";
+}
+
+.law-more-details > summary span:first-child {
+  color: #29483a;
+  font-size: 17px;
+  font-weight: 750;
+}
+
+.law-more-content {
+  display: grid;
+  gap: 20px;
+  border-top: 1px solid #edf1ee;
+  padding: 18px;
+}
+
+.law-facts {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 12px;
+  margin: 0;
+}
+
+.law-facts > div {
+  border-radius: 7px;
+  background: #f7faf7;
+  padding: 12px;
+}
+
+.law-facts dt {
+  color: #758579;
+  font-size: 12px;
+}
+
+.law-facts dd {
+  margin: 4px 0 0;
+  color: #304a37;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.law-pdf-viewer {
+  overflow: hidden;
+  border: 1px solid #e2eae4;
+  border-radius: 8px;
+}
+
+.law-pdf-viewer > div {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 12px 14px;
+  color: #315a40;
+}
+
+.law-pdf-viewer > div a {
+  color: #2f7048;
+  font-weight: 700;
+  text-decoration: underline;
+}
+
+.law-pdf-viewer iframe {
+  display: block;
+  width: 100%;
+  min-height: 70vh;
+  border: 0;
+  background: #f3f5f3;
+}
+
+.law-vote-panel {
+  display: grid;
+  gap: 16px;
+  border: 1px solid #e2eae4;
+  border-radius: 10px;
+  background: #fff;
+  padding: 18px;
+}
+
+.law-vote-panel .popular-results {
+  margin: 0;
+}
+
+.law-explanation-options {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.law-explanation-options button {
+  display: grid;
+  min-height: 68px;
+  align-content: center;
+  justify-items: start;
+  gap: 4px;
+  border: 1px solid #d8e4db;
+  border-radius: 8px;
+  background: #fff;
+  color: #315a40;
+  padding: 9px 11px;
+  text-align: left;
+}
+
+.law-explanation-options button[aria-pressed="true"] {
+  border-color: #45825a;
+  background: #eaf4ed;
+  box-shadow: inset 0 0 0 1px #45825a;
+}
+
+.law-explanation-options strong {
+  font-size: 14px;
+}
+
+.law-explanation-options span {
+  color: #6a7b6e;
+  font-size: 12px;
+}
+
+@media (max-width: 760px) {
+  .law-detail-tools {
+    grid-template-columns: 1fr;
+  }
+
+  .law-document-card {
+    grid-template-columns: 48px minmax(0, 1fr);
+    align-items: start;
+  }
+
+  .law-document-card > div:nth-child(2),
+  .law-document-actions,
+  .law-document-unavailable {
+    grid-column: 1 / -1;
+  }
+
+  .law-document-card > div:nth-child(2) {
+    grid-column: 2;
+    grid-row: 1;
+  }
+}
+
+@media (max-width: 540px) {
+  .law-explanation-options {
+    grid-template-columns: 1fr;
+  }
+
+  .law-explanation-options button {
+    min-height: 56px;
+  }
+
+  .law-detail-meta {
+    align-items: flex-start;
+  }
+
+  .law-detail-heading > h1 {
+    text-align: left;
+  }
+
+  .law-detail-author {
+    text-align: left;
+  }
+
+  .law-detail-summary p {
+    font-size: 15px;
+  }
+
+  .law-more-details > summary {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .law-pdf-viewer iframe {
+    min-height: 55vh;
+  }
+
+  .law-project-card-footer {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}

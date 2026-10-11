@@ -1,14 +1,14 @@
-export type OccurrenceCategory = 'Infraestrutura' | 'Iluminação' | 'Água e saneamento' | 'Segurança'
+export type OccurrenceCategory = 'Infraestrutura' | 'Iluminação' | 'Água e saneamento' | 'Segurança' | 'Ponto de alagamento' | 'Árvore para poda' | 'Semáforo apagado' | 'Acidente de trânsito'
 export type OccurrenceStatus = 'Aguardando Resposta' | 'Em Reparo' | 'Reparo Realizado' | 'Solicitação Improcedente'
 export type OfficialReviewStatus = 'procedente' | 'improcedente'
 export interface OfficialVerification { status: OfficialReviewStatus; organization: string; reviewer: string; reviewedAt: string; note?: string }
 export interface WorkflowHistoryEntry { status: OccurrenceStatus; changedBy: string; organization: string; changedAt: string; response: string }
-export type DirectRequestCategory = 'Reclamação' | 'Elogio' | 'Solicitação'
+export type DirectRequestCategory = 'Reclamação' | 'Elogio' | 'Solicitação' | 'Questionamento'
 export type DirectRequestStatus = 'Enviado' | 'Lido' | 'Respondido' | 'Arquivado'
 export interface DirectRequest {
   id: string; protocolNumber: string; userId: string; userName: string; recipientId: string; recipientName: string
   category: DirectRequestCategory; subject: string; message: string; attachmentNames: string[]
-  status: DirectRequestStatus; sentAt: string; response?: string; respondedAt?: string
+  status: DirectRequestStatus; sentAt: string; dueAt: string; overdueDays: number; response?: string; respondedAt?: string
 }
 export interface Occurrence {
   id: string; title: string; description: string; category: OccurrenceCategory; municipality: string; neighborhood: string

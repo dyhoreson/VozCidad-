@@ -1,18 +1,30 @@
 import { supabase } from '../lib/supabase'
 import type { DirectRequest, DirectRequestCategory, DirectRequestStatus } from '../types'
 import type { ProtocolDbType } from '../types/database'
+import { listInstitutionProfiles } from './civicData'
 
-type ProtocolRow = { id: string; protocol_number: string; user_id: string; user_name?: string; recipient_id: string; recipient_name?: string; type: string; subject: string; message: string; attachment_urls?: string[]; status: string; response: string | null; responded_at: string | null; created_at: string }
+type ProtocolRow = { id: string; protocol_number: string; user_id: string; user_name?: string; recipient_id: string; recipient_name?: string; type: string; subject: string; message: string; attachment_urls?: string[]; status: string; response: string | null; responded_at: string | null; created_at: string; due_at: string }
 const client = () => { if (!supabase) throw new Error('Supabase ainda não está configurado.'); return supabase }
-const categoryToDb: Record<DirectRequestCategory, ProtocolDbType> = { Reclamação: 'reclamacao', Elogio: 'elogio', Solicitação: 'solicitacao' }
-const categoryFromDb: Record<string, DirectRequestCategory> = { reclamacao: 'Reclamação', elogio: 'Elogio', solicitacao: 'Solicitação' }
+const categoryToDb: Record<DirectRequestCategory, ProtocolDbType> = { Reclamação: 'reclamacao', Elogio: 'elogio', Solicitação: 'solicitacao', Questionamento: 'questionamento' }
+const categoryFromDb: Record<string, DirectRequestCategory> = { reclamacao: 'Reclamação', elogio: 'Elogio', solicitacao: 'Solicitação', questionamento: 'Questionamento' }
 const statusFromDb: Record<string, DirectRequestStatus> = { enviado: 'Enviado', lido: 'Lido', respondido: 'Respondido', arquivado: 'Arquivado' }
-function mapProtocol(row: ProtocolRow): DirectRequest { return { id: row.id, protocolNumber: row.protocol_number, userId: row.user_id, userName: row.user_name ?? 'Cidadão', recipientId: row.recipient_id, recipientName: row.recipient_name ?? 'Destinatário institucional', category: categoryFromDb[row.type] ?? 'Solicitação', subject: row.subject, message: row.message, attachmentNames: row.attachment_urls ?? [], status: statusFromDb[row.status] ?? 'Enviado', sentAt: new Intl.DateTimeFormat('pt-BR', { dateStyle: 'short', timeStyle: 'short' }).format(new Date(row.created_at)), response: row.response ?? undefined, respondedAt: row.responded_at ? new Intl.DateTimeFormat('pt-BR', { dateStyle: 'short', timeStyle: 'short' }).format(new Date(row.responded_at)) : undefined } }
+function mapProtocol(row: ProtocolRow): DirectRequest {
+  const dueAt = row.due_at || new Date(new Date(row.created_at).getTime() + 15 * 24 * 60 * 60 * 1000).toISOString()
+  const pending = row.status === 'enviado' || row.status === 'lido'
+  const overdueDays = pending ? Math.max(0, Math.floor((Date.now() - Date.parse(dueAt)) / (24 * 60 * 60 * 1000))) : 0
+  return {
+    id: row.id, protocolNumber: row.protocol_number, userId: row.user_id, userName: row.user_name ?? 'Cidadão',
+    recipientId: row.recipient_id, recipientName: row.recipient_name ?? 'Destinatário institucional',
+    category: categoryFromDb[row.type] ?? 'Solicitação', subject: row.subject, message: row.message,
+    attachmentNames: row.attachment_urls ?? [], status: statusFromDb[row.status] ?? 'Enviado',
+    sentAt: new Intl.DateTimeFormat('pt-BR', { dateStyle: 'short', timeStyle: 'short' }).format(new Date(row.created_at)),
+    dueAt, overdueDays, response: row.response ?? undefined,
+    respondedAt: row.responded_at ? new Intl.DateTimeFormat('pt-BR', { dateStyle: 'short', timeStyle: 'short' }).format(new Date(row.responded_at)) : undefined,
+  }
+}
 
 export async function listProtocolRecipients() {
-  const { data, error } = await client().from('profiles').select('id,full_name,role,municipio').in('role', ['politico', 'empresa']).order('full_name')
-  if (error) throw new Error(error.message)
-  return (data ?? []).map(item => ({ id: item.id, name: item.full_name || 'Perfil institucional', role: item.role, municipality: item.municipio }))
+  return (await listInstitutionProfiles()).map(item => ({ id: item.id, name: item.name, role: item.role, municipality: item.municipality, state: item.state }))
 }
 
 export async function sendProtocol(input: { userId: string; recipientId: string; category: DirectRequestCategory; subject: string; message: string; files: File[] }) {

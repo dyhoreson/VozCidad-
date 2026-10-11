@@ -1,0 +1,42 @@
+/* Variantes globais explícitas; carregadas por último para corrigir regras legadas. */
+button.primary-button,.primary-button,button.auth-submit,.auth-submit{background-color:var(--color-brand-primary);color:#fff;font-weight:600}
+button.primary-button:hover:not(:disabled),.primary-button:hover:not(:disabled),button.auth-submit:hover:not(:disabled),.auth-submit:hover:not(:disabled){background-color:var(--color-brand-dark);color:#fff}
+button.secondary-action,.secondary-action,button.secondary-button,.secondary-button{background-color:#f3f4f6;color:#1f2937;border:1px solid #d1d5db;font-weight:500}
+button.secondary-action:hover:not(:disabled),.secondary-action:hover:not(:disabled),button.secondary-button:hover:not(:disabled),.secondary-button:hover:not(:disabled){background-color:#e5e7eb;color:#111827}
+button.danger-button,.danger-button{background-color:#dc2626;color:#fff;border:1px solid #dc2626;font-weight:600}
+button.danger-button:hover:not(:disabled),.danger-button:hover:not(:disabled){background-color:#b91c1c;color:#fff;border-color:#b91c1c}
+button.login-button,.login-button{background-color:var(--color-brand-primary);color:#fff;border-color:var(--color-brand-primary);font-weight:600}
+button.login-button:hover:not(:disabled),.login-button:hover:not(:disabled){background-color:var(--color-brand-dark);color:#fff;border-color:var(--color-brand-dark)}
+button.verify-positive,.verify-positive{background:var(--color-brand-primary);color:#fff;border:1px solid var(--color-brand-primary);font-weight:600}
+button.verify-positive:hover:not(:disabled),.verify-positive:hover:not(:disabled){background:var(--color-brand-dark);color:#fff}
+button.verify-negative,.verify-negative{background:#dc2626;color:#fff;border:1px solid #dc2626;font-weight:600}
+button.verify-negative:hover:not(:disabled),.verify-negative:hover:not(:disabled){background:#b91c1c;color:#fff}
+button.popular-vote-button.favor{color:#166534;background:#f0fdf4}
+button.popular-vote-button.against{color:#991b1b;background:#fef2f2}
+button.popular-vote-button.null{color:#713f12;background:#fffbeb}
+button.popular-vote-button.chosen.favor{color:#fff;background:var(--color-brand-primary);border-color:var(--color-brand-primary)}
+button.popular-vote-button.chosen.against{color:#fff;background:#dc2626;border-color:#dc2626}
+button.popular-vote-button.chosen.null{color:#fff;background:#854d0e;border-color:#854d0e}
+button.icon-button,button.auth-close,button.incident-detail-close{color:#334155}
+button.icon-button:hover,button.auth-close:hover,button.incident-detail-close:hover{background-color:#e2e8f0;color:#0f172a}
+button.filter-button,button.sort-button{background:#f3f4f6;color:#1f2937;border-color:#d1d5db;font-weight:500}
+button.filter-button:hover,button.sort-button:hover{background:#e5e7eb;color:#111827}
+button.management-notice-action,button.retry-action{background:#f3f4f6;color:#1f2937;border:1px solid #d1d5db;border-radius:.5rem;padding:.4rem .7rem;font-weight:500}
+button[disabled]{cursor:not-allowed}
+.join-cta-banner button.join-cta-button{background-color:#fff!important;color:#1e3a8a!important}
+.join-cta-banner button.join-cta-button:hover{background-color:#fde047!important;color:#172554!important}
+.join-cta-banner a.join-cta-action{background-color:#fff!important;color:#1e3a8a!important}
+.join-cta-banner a.join-cta-action:hover{background-color:#f3f4f6!important;color:#172554!important}
+
+.app-shell,.main-column{background:var(--color-brand-bg)}
+.sidebar{background:#fff;border-right-color:#e3eade}
+.nav-heading{color:#748775}
+.nav-link{color:#526b59}
+.nav-link svg{color:#718a75}
+.nav-link.active{background:#e8f1e4;color:var(--color-brand-dark)}
+.nav-link.active svg{color:var(--color-brand-primary)}
+.state-card{background:var(--color-brand-bg);border-color:#e3eade}
+.state-flag{background:#e3f0df;color:var(--color-brand-dark)}
+.section-title h2,.section-heading h2,h1.text-slate-900,h2.text-slate-900,h3.text-slate-900{color:var(--color-brand-dark)}
+.auth-brand-logo{display:block;width:min(190px,100%);height:106px;object-fit:contain}
+button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{outline-color:var(--color-brand-light)}
