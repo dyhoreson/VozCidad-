@@ -1,8 +1,9 @@
 # Serviço de acessibilidade para leis
 
 API FastAPI que produz explicações em linguagem simples, perguntas frequentes e
-texto para leitura em voz alta usando a API Gemini. A chave Gemini é lida somente
-do ambiente do servidor e nunca deve ser enviada ao frontend.
+texto para leitura em voz alta usando o modelo Gemini 3.8 Flash pela Interactions
+API. A chave Gemini é lida somente do ambiente do servidor e nunca deve ser
+enviada ao frontend.
 
 ## Executar localmente
 
@@ -29,6 +30,8 @@ O endpoint `POST /analisar-projeto` recebe JSON como:
 `modo` aceita `resumido` e `completo`. A resposta inclui `resumo_didatico`,
 `perguntas_frequentes`, `analise_completa` e `texto_para_voz`.
 O endpoint legado `POST /analyze` continua disponível para clientes antigos.
+As interações são enviadas com `store=false` para não manter o conteúdo dos
+projetos no histórico remoto da API.
 
 Configure `VITE_AI_SERVICE_URL` no frontend para apontar à URL publicada desta
 API. Em produção, ajuste `FRONTEND_ORIGINS` para os domínios exatos do portal.

@@ -14,7 +14,7 @@ load_dotenv()
 logging.basicConfig(level=os.getenv("LOG_LEVEL", "INFO"))
 logger = logging.getLogger("voz-cidada-ai")
 
-GEMINI_MODEL = os.getenv("GEMINI_MODEL", "gemini-2.5-flash")
+GEMINI_MODEL = os.getenv("GEMINI_MODEL", "gemini-3.8-flash")
 FRONTEND_ORIGINS = [
     origin.strip()
     for origin in os.getenv(
@@ -104,17 +104,19 @@ async def analyze(request: AnalyzeRequest) -> AnalysisResponse:
 
     try:
         client = genai.Client(api_key=api_key)
-        response = await client.aio.models.generate_content(
+        response = await client.aio.interactions.create(
             model=GEMINI_MODEL,
-            contents=build_prompt(request),
-            config={
-                "response_mime_type": "application/json",
-                "temperature": 0.2,
+            input=build_prompt(request),
+            response_format={
+                "type": "text",
+                "mime_type": "application/json",
+                "schema": AnalysisResponse.model_json_schema(),
             },
+            store=False,
         )
-        if not response.text:
+        if not response.output_text:
             raise ValueError("Gemini retornou uma resposta vazia.")
-        return AnalysisResponse.model_validate(json.loads(response.text))
+        return AnalysisResponse.model_validate(json.loads(response.output_text))
     except (json.JSONDecodeError, ValidationError, ValueError) as error:
         logger.warning("Gemini returned an invalid accessibility analysis: %s", error)
         raise HTTPException(

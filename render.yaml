@@ -29,5 +29,7 @@ services:
         value: 3.12.10
       - key: FRONTEND_ORIGINS
         value: http://localhost:5173,https://vozcidada.vercel.app
+      - key: GEMINI_MODEL
+        value: gemini-3.8-flash
       - key: GEMINI_API_KEY
         sync: false
