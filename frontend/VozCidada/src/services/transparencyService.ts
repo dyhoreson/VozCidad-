@@ -1,6 +1,6 @@
 import { isRecord, numberValue, recordsFromPayload, requestJson, textValue, type PublicApiRecord } from './publicApi'
 
-const DEFAULT_PORTAL_API = 'https://api.portaldatransparencia.gov.br/api-de-dados'
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL?.trim().replace(/\/+$/, '') ?? ''
 
 type PortalRecordFilters = {
   page?: number
@@ -87,12 +87,12 @@ export type SiconfiBudgetReport = {
 }
 
 export function isPortalTransparencyConfigured(): boolean {
-  return isPortalProxyConfigured() || Boolean(import.meta.env.VITE_PORTAL_TRANSPARENCIA_KEY?.trim())
+  return Boolean(API_BASE_URL)
 }
 
 function portalUrl(path: string, filters: PortalRecordFilters): URL {
-  const base = (import.meta.env.VITE_PORTAL_TRANSPARENCIA_API_URL || DEFAULT_PORTAL_API).replace(/\/+$/, '')
-  const url = new URL(`${base}/${path.replace(/^\/+/, '')}`)
+  if (!API_BASE_URL) throw new Error('A integração do Portal da Transparência não está configurada no backend.')
+  const url = new URL(`/api/transparency/federal/${path.replace(/^\/+/, '')}`, `${API_BASE_URL}/`)
   url.searchParams.set('pagina', String(Math.max(1, filters.page ?? 1)))
   if (filters.agencyCode) url.searchParams.set('codigoOrgao', filters.agencyCode)
   if (filters.superiorAgencyCode) url.searchParams.set('orgaoSuperior', filters.superiorAgencyCode)
@@ -103,17 +103,8 @@ function portalUrl(path: string, filters: PortalRecordFilters): URL {
   return url
 }
 
-function isPortalProxyConfigured(): boolean {
-  return Boolean(import.meta.env.VITE_PORTAL_TRANSPARENCIA_API_URL?.trim())
-}
-
 async function fetchPortalRecords(path: string, label: string, filters: PortalRecordFilters): Promise<PublicApiRecord[]> {
-  const apiKey = import.meta.env.VITE_PORTAL_TRANSPARENCIA_KEY?.trim()
-  if (!apiKey && !isPortalProxyConfigured()) {
-    throw new Error('Configure VITE_PORTAL_TRANSPARENCIA_KEY ou um proxy em VITE_PORTAL_TRANSPARENCIA_API_URL para consultar o Portal da Transparência.')
-  }
-  const headers: HeadersInit = apiKey && !isPortalProxyConfigured() ? { 'chave-api-dados': apiKey } : {}
-  const payload = await requestJson(portalUrl(path, filters), label, headers)
+  const payload = await requestJson(portalUrl(path, filters), label)
   return recordsFromPayload(payload)
 }
 

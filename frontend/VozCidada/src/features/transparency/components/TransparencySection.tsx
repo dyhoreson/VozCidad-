@@ -249,7 +249,7 @@ export function TransparencySection() {
 
     <section className="open-data-card">
       <div className="open-data-card-title"><div><h4>Contratos, licitações e repasses</h4><p>Portal da Transparência do Governo Federal · beneficiário filtrado para Natal quando aplicável.</p></div><Building2 size={17} /></div>
-      {!isPortalTransparencyConfigured() && <p className="open-data-configuration">Para consultar esses registros, configure <code>VITE_PORTAL_TRANSPARENCIA_KEY</code> nas variáveis de ambiente do frontend. A chave é pública no navegador; em produção, prefira um proxy no backend.</p>}
+      {!isPortalTransparencyConfigured() && <p className="open-data-configuration">A consulta da CGU precisa do backend do Voz Cidadã. Configure <code>VITE_API_BASE_URL</code> no frontend e a chave da API como segredo no servidor; ela não deve ser exposta no navegador.</p>}
       {isPortalTransparencyConfigured() && <button type="button" className="open-data-action" onClick={loadPortalRecords} disabled={contracts.loading || procurements.loading || transfers.loading}>
         {contracts.loading || procurements.loading || transfers.loading ? <LoaderCircle className="spin" size={15} /> : <ArrowDownToLine size={15} />}
         {portalRequested ? 'Atualizar consultas' : 'Carregar dados oficiais'}
@@ -263,7 +263,7 @@ export function TransparencySection() {
     </section>
 
     <section className="open-data-card">
-      <div className="open-data-card-title"><div><h4>Fontes locais do Rio Grande do Norte</h4><p>Adaptadores opcionais para plugar APIs municipais e estaduais sem acoplar o portal a um formato específico.</p></div><Building2 size={17} /></div>
+      <div className="open-data-card-title"><div><h4>Fontes locais do Rio Grande do Norte</h4><p>Consultas a fontes oficiais municipais, estaduais e legislativas.</p></div><Building2 size={17} /></div>
       <div className="open-data-local-list">{sources.map((source: LocalTransparencySource) => {
         const state = localData[source.id]
         return <article key={source.id} className="open-data-local-source">
@@ -274,12 +274,12 @@ export function TransparencySection() {
           <ExternalLinkButton href={source.portalUrl}>Portal oficial</ExternalLinkButton>
           {state?.error && <p className="open-data-error" role="alert">{state.error}{state.data.length > 0 && ' Os últimos dados carregados continuam visíveis e podem estar desatualizados.'}</p>}
           {state && !state.loading && state.data.length > 0 && <ul className="open-data-local-records">{state.data.slice(0, 3).map(record => <li key={record.id}>
-            <strong>{record.title}</strong><span>{record.description} · {shortDate(record.date)}</span>
+            <strong>{record.title}</strong><span>{record.matchedQuery ? `Correspondência na busca por “${record.matchedQuery}” · ` : ''}{record.description} · {shortDate(record.date)}</span>
             {record.sourceUrl && <a href={record.sourceUrl} target="_blank" rel="noreferrer">Detalhes</a>}
           </li>)}</ul>}
         </article>
       })}</div>
-      <p className="open-data-configuration">Para conectar um adaptador, defina <code>VITE_NATAL_TRANSPARENCIA_API_URL</code>, <code>VITE_RN_TRANSPARENCIA_API_URL</code> ou <code>VITE_ASSEMBLEIA_RN_TRANSPARENCIA_API_URL</code> para um endpoint JSON público ou proxy próprio.</p>
+      <p className="open-data-configuration">A Assembleia disponibiliza busca pública de documentos; os links abrem as fontes oficiais, pois consultas detalhadas de dados financeiros exigem acesso autorizado. Para Natal, o endpoint informado é de folha de pagamento e não retorna uma resposta JSON utilizável; o portal municipal segue disponível pelo link oficial.</p>
     </section>
 
     <p className="open-data-disclaimer">Os dados são fornecidos pelas APIs públicas de origem. Valores e cadastros podem ter atraso de publicação; em caso de divergência, consulte o portal oficial vinculado em cada seção.</p>

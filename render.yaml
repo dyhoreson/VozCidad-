@@ -17,6 +17,8 @@ services:
         sync: false
       - key: ADMIN_TRANSACTION_PASSWORD
         sync: false
+      - key: PORTAL_TRANSPARENCIA_API_KEY
+        sync: false
   - type: web
     name: vozcidada-ai
     runtime: python

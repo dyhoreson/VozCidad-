@@ -21,6 +21,7 @@ const schema = z.object({
   SUPABASE_SERVICE_ROLE_KEY: z.string().min(1).refine(isServiceRoleKey, 'Use uma chave secreta Supabase (sb_secret_) ou JWT com role service_role.'),
   ADMIN_TRANSACTION_PASSWORD: z.string().min(8),
   NEWSDATA_API_KEY: z.string().min(1).optional(),
+  PORTAL_TRANSPARENCIA_API_KEY: z.string().trim().min(1).optional(),
 })
 
 const parsed = schema.safeParse(process.env)

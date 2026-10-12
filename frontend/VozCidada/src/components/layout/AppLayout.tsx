@@ -244,7 +244,7 @@ export function AppLayout({ children }: { children: ReactNode }) {
         </header>
         <main>{children}</main>
         <footer className="footer">
-          <span>© 2025 Voz Cidadã RN</span>
+          <span>© {new Date().getFullYear()} Voz Cidadã RN</span>
           <span>Feito para fortalecer a democracia <span className="footer-heart">♥</span></span>
           <a href="mailto:contato@vozcidada.rn.gov.br">Contato</a>
         </footer>

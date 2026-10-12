@@ -8,6 +8,7 @@ import { incidentsRouter } from './routes/incidents.js'
 import { protocolsRouter } from './routes/protocols.js'
 import { adminRoutes } from './routes/adminRoutes.js'
 import { newsRouter } from './routes/news.js'
+import { transparencyRouter } from './routes/transparency.js'
 
 const app = express()
 app.disable('x-powered-by')
@@ -16,6 +17,7 @@ app.use(cors({ origin: env.FRONTEND_ORIGIN, methods: ['GET', 'POST', 'PATCH', 'D
 app.use(express.json({ limit: '1mb' }))
 app.get('/health', (_req, res) => res.json({ status: 'ok', region: 'RN' }))
 app.use('/api/news', newsRouter)
+app.use('/api/transparency', transparencyRouter)
 app.use('/api/incidents', incidentsRouter)
 app.use('/api/bills', billsRouter)
 app.use('/api/protocols', protocolsRouter)

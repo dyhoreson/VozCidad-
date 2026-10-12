@@ -88,7 +88,7 @@ export function PresidentMandateCard() {
       </div>
     </article>
     {expanded && <div className="president-mandate-details" id="president-mandate-details">
-      {!isPortalTransparencyConfigured() && <p className="open-data-configuration">Para carregar valores diretamente da API da CGU, configure a chave do Portal da Transparência no backend ou um proxy em <code>VITE_PORTAL_TRANSPARENCIA_API_URL</code>. A chave não deve ser exposta no bundle público.</p>}
+      {!isPortalTransparencyConfigured() && <p className="open-data-configuration">A consulta da CGU precisa do backend do Voz Cidadã. Configure <code>VITE_API_BASE_URL</code> no frontend e a chave da API como segredo no servidor; ela não deve ser exposta no navegador.</p>}
       {isPortalTransparencyConfigured() && <>
         <div className="president-mandate-refresh"><button type="button" className="open-data-action" disabled={expenses.loading || amendments.loading} onClick={() => void loadMandateData()}>
           {expenses.loading || amendments.loading ? <LoaderCircle className="spin" size={14} /> : <ArrowUpRight size={14} />}

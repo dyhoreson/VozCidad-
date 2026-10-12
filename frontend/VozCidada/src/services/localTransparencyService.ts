@@ -1,6 +1,7 @@
 import { recordsFromPayload, requestJson, textValue, type PublicApiRecord } from './publicApi'
 
 export type LocalTransparencySourceId = 'natal' | 'rn-state' | 'rn-assembly'
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL?.trim().replace(/\/+$/, '') ?? ''
 
 export type LocalTransparencySource = {
   id: LocalTransparencySourceId
@@ -16,6 +17,7 @@ export type LocalTransparencyRecord = {
   description: string
   date: string | null
   sourceUrl: string | null
+  matchedQuery?: string
 }
 
 const sources: LocalTransparencySource[] = [
@@ -36,9 +38,9 @@ const sources: LocalTransparencySource[] = [
   {
     id: 'rn-assembly',
     name: 'Assembleia Legislativa do RN',
-    description: 'Transparência legislativa e administrativa da Assembleia.',
-    portalUrl: 'https://www.al.rn.leg.br/',
-    apiUrl: import.meta.env.VITE_ASSEMBLEIA_RN_TRANSPARENCIA_API_URL?.trim() || null,
+    description: 'Busca pública de documentos sobre contratos, licitações e despesas no Portal da Transparência.',
+    portalUrl: 'https://transparencia.al.rn.leg.br/dados-abertos',
+    apiUrl: API_BASE_URL ? `${API_BASE_URL}/api/transparency/local/alrn` : null,
   },
 ]
 
@@ -49,10 +51,11 @@ export function getLocalTransparencySources(): LocalTransparencySource[] {
 function mapLocalRecord(record: PublicApiRecord, index: number): LocalTransparencyRecord {
   return {
     id: textValue(record, 'id', 'codigo', 'numero') ?? `registro-${index}`,
-    title: textValue(record, 'objeto', 'titulo', 'descricao', 'nome') ?? 'Registro público',
-    description: textValue(record, 'orgao', 'unidadeGestora', 'favorecido', 'situacao', 'status') ?? 'Consulte o portal oficial para ver os detalhes.',
+    title: textValue(record, 'title', 'objeto', 'titulo', 'descricao', 'nome') ?? 'Registro público',
+    description: textValue(record, 'conteudo', 'orgao', 'unidadeGestora', 'favorecido', 'situacao', 'status') ?? 'Consulte o portal oficial para ver os detalhes.',
     date: textValue(record, 'data', 'dataPublicacao', 'dataAssinatura', 'dataAbertura'),
     sourceUrl: textValue(record, 'url', 'urlDetalhamento', 'link'),
+    matchedQuery: textValue(record, 'matchedQuery') ?? undefined,
   }
 }
 
