@@ -130,8 +130,10 @@ export function AppLayout({ children }: { children: ReactNode }) {
     const onboardingVisible = onboardingOpen && isMobile
     if (!onboardingVisible && !installOpen) return
 
-    const previousOverflow = document.body.style.overflow
+    const previousBodyOverflow = document.body.style.overflow
+    const previousRootOverflow = document.documentElement.style.overflow
     document.body.style.overflow = 'hidden'
+    document.documentElement.style.overflow = 'hidden'
     const closeOnEscape = (event: KeyboardEvent) => {
       if (event.key !== 'Escape') return
       if (onboardingVisible) dismissOnboarding()
@@ -139,7 +141,8 @@ export function AppLayout({ children }: { children: ReactNode }) {
     }
     window.addEventListener('keydown', closeOnEscape)
     return () => {
-      document.body.style.overflow = previousOverflow
+      document.body.style.overflow = previousBodyOverflow
+      document.documentElement.style.overflow = previousRootOverflow
       window.removeEventListener('keydown', closeOnEscape)
     }
   }, [onboardingOpen, isMobile, installOpen, dismissOnboarding])
@@ -248,27 +251,27 @@ export function AppLayout({ children }: { children: ReactNode }) {
       </div>
     </div>
 
-    {onboardingOpen && isMobile && <div className="mobile-onboarding-overlay fixed inset-0 z-[9999] flex flex-col justify-center overflow-hidden bg-slate-950 p-4 sm:p-6" role="dialog" aria-modal="true" aria-labelledby="mobile-onboarding-title">
-      <div className="mobile-onboarding-content mx-auto w-full max-w-4xl">
+    {onboardingOpen && isMobile && <div className="mobile-onboarding-overlay fixed inset-0 z-[9999] flex flex-col overflow-hidden bg-slate-950 p-4 sm:p-6" role="dialog" aria-modal="true" aria-labelledby="mobile-onboarding-title">
+      <div className="mobile-onboarding-content mx-auto flex w-full max-w-4xl flex-1 flex-col">
         <div className="mobile-onboarding-heading mb-4 flex items-start justify-between gap-4">
           <div>
-            <p className="mb-2 text-sm font-semibold uppercase tracking-widest text-emerald-300">Voz Cidadã · Rio Grande do Norte</p>
-            <h1 id="mobile-onboarding-title" className="text-3xl font-bold text-white sm:text-4xl">Bem-vindo à participação cidadã</h1>
-            <p className="mt-3 max-w-2xl text-base leading-relaxed text-slate-200">Escolha por onde quer começar. Você também pode acessar a plataforma completa a qualquer momento.</p>
+            <p className="mb-2 text-xs font-semibold uppercase tracking-widest text-emerald-300">Voz Cidadã · Rio Grande do Norte</p>
+            <h1 id="mobile-onboarding-title" className="text-3xl font-bold text-white sm:text-4xl">Bem-vindo!</h1>
+            <p className="mt-2 max-w-2xl text-sm leading-relaxed text-slate-200">O que você gostaria de fazer hoje?</p>
           </div>
           <button className="mobile-onboarding-close" onClick={dismissOnboarding} aria-label="Fechar apresentação" autoFocus><X size={21} /></button>
         </div>
 
-        <div className="mobile-onboarding-grid my-4 grid grid-cols-2 gap-3 sm:gap-4">
+        <div className="mobile-onboarding-grid my-4 grid flex-1 grid-cols-2 grid-rows-2 gap-3 sm:gap-4">
           {quickLinks.map(({ title, description, to, icon: Icon, image }) => <button
             key={title}
             type="button"
-            className="mobile-onboarding-card group flex min-h-0 flex-col items-center rounded-xl border border-slate-700/80 bg-slate-800/90 p-3 text-center text-white transition-all hover:border-emerald-500 focus-visible:outline-emerald-300 sm:p-4"
+            className="mobile-onboarding-card group flex min-h-0 flex-col items-center justify-center rounded-2xl border border-slate-700/80 bg-slate-800/90 p-3 text-center text-white transition-all hover:border-emerald-500 hover:bg-slate-800 focus-visible:outline-emerald-300 sm:p-4"
             onClick={() => openQuickLink(to)}
           >
             {image
-              ? <img src={image} alt="" aria-hidden="true" className="mobile-onboarding-icon mb-2 h-10 w-10 object-contain" />
-              : <span className="mobile-onboarding-icon mb-2 grid h-10 w-10 place-items-center rounded-xl bg-emerald-300/15 text-emerald-200"><Icon size={22} aria-hidden="true" /></span>}
+              ? <img src={image} alt="" aria-hidden="true" className="mobile-onboarding-icon mb-3 h-10 w-10 object-contain" />
+              : <span className="mobile-onboarding-icon mb-3 grid h-10 w-10 place-items-center rounded-2xl bg-emerald-300/15 text-emerald-200"><Icon size={22} aria-hidden="true" /></span>}
             <span className="min-w-0">
               <strong className="mt-1 block text-sm font-semibold text-white sm:text-base">{title}</strong>
               <span className="mt-1 line-clamp-2 block text-xs leading-relaxed text-slate-300">{description}</span>
@@ -276,7 +279,7 @@ export function AppLayout({ children }: { children: ReactNode }) {
           </button>)}
         </div>
 
-        <button type="button" className="mobile-onboarding-enter mt-5 w-full rounded-xl bg-emerald-500 px-5 py-4 text-base font-bold text-white transition hover:bg-emerald-400 sm:w-auto" onClick={dismissOnboarding}>
+        <button type="button" className="mobile-onboarding-enter mt-auto w-full rounded-xl bg-emerald-500 px-5 py-4 text-base font-bold text-white transition hover:bg-emerald-400 sm:w-auto" onClick={dismissOnboarding}>
           Acessar Plataforma
         </button>
       </div>
