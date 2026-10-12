@@ -9,6 +9,8 @@ interface AuthContextValue extends AuthState {
   signIn: (email: string, password: string) => Promise<void>
   signUp: (email: string, password: string, fullName: string, details?: { age: number; address: string; cep: string; municipality: string }) => Promise<boolean>
   resendSignupConfirmation: (email: string) => Promise<void>
+  resetPasswordForEmail: (email: string) => Promise<void>
+  updatePassword: (password: string) => Promise<void>
   signInWithOAuth: (provider: OAuthProvider) => Promise<void>
   signInAsDemoRole: (role: 'cidadao' | 'politico' | 'empresa') => void
   signOut: () => Promise<void>
@@ -136,6 +138,19 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     if (error) throw error
   }, [])
 
+  const resetPasswordForEmail = useCallback(async (email: string) => {
+    if (!supabase) throw new Error('A recuperação de senha exige uma conta conectada ao Supabase.')
+    const redirectTo = `${window.location.origin}/reset-password`
+    const { error } = await supabase.auth.resetPasswordForEmail(email.trim(), { redirectTo })
+    if (error) throw error
+  }, [])
+
+  const updatePassword = useCallback(async (password: string) => {
+    if (!supabase) throw new Error('A redefinição de senha exige uma conta conectada ao Supabase.')
+    const { error } = await supabase.auth.updateUser({ password })
+    if (error) throw error
+  }, [])
+
   const signInWithOAuth = useCallback(async (provider: OAuthProvider) => {
     if (supabase) {
       sessionStorage.setItem('voz-cidada-redirect-profile', '1')
@@ -182,9 +197,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const value = useMemo<AuthContextValue>(() => ({
     user, profile: user ? { ...profileFromUser(user), ...(databaseProfile ? { fullName: databaseProfile.full_name || profileFromUser(user).fullName, role: databaseProfile.role, municipality: databaseProfile.municipio ?? undefined, state: databaseProfile.uf, points: databaseProfile.points, age: databaseProfile.age ?? undefined, address: databaseProfile.address ?? undefined, cep: databaseProfile.cep ?? undefined, avatarUrl: databaseProfile.avatar_url ?? undefined } : {}), isDemo: !isSupabaseConfigured } : null,
-    session, loading, isDemo: !isSupabaseConfigured, signIn, signUp, resendSignupConfirmation, signInWithOAuth, signInAsDemoRole, signOut,
+    session, loading, isDemo: !isSupabaseConfigured, signIn, signUp, resendSignupConfirmation, resetPasswordForEmail, updatePassword, signInWithOAuth, signInAsDemoRole, signOut,
     authModalOpen, openAuthModal, closeAuthModal,
-  }), [user, databaseProfile, session, loading, signIn, signUp, resendSignupConfirmation, signInWithOAuth, signInAsDemoRole, signOut, authModalOpen, openAuthModal, closeAuthModal])
+  }), [user, databaseProfile, session, loading, signIn, signUp, resendSignupConfirmation, resetPasswordForEmail, updatePassword, signInWithOAuth, signInAsDemoRole, signOut, authModalOpen, openAuthModal, closeAuthModal])
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
 }

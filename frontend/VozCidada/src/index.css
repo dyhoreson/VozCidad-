@@ -13,6 +13,7 @@
 @import "./styles/accessibility-reader.css";
 @import "./styles/law-details.css";
 @import "./styles/desktop-readable.css";
+@import "./styles/auth-experience.css";
 
 @theme {
   --color-brand-dark: #163b27;

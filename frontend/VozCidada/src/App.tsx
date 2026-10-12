@@ -9,6 +9,7 @@ import { CivicProfilePage } from './features/politicians/pages/CivicProfilePage'
 import { ManagementPage } from './features/politicians/pages/ManagementPage'
 import { PoliticianDetailsPage } from './features/politicians/pages/PoliticianDetailsPage'
 import { ProtectedRoute } from './routes/ProtectedRoute'
+import { ResetPasswordPage } from './features/auth/pages/ResetPasswordPage'
 
 const DirectContactPage = lazy(() => import('./features/direct-contact/pages/DirectContactPage').then(module => ({ default: module.DirectContactPage })))
 const MyProtocolsPage = lazy(() => import('./features/direct-contact/pages/MyProtocolsPage').then(module => ({ default: module.MyProtocolsPage })))
@@ -22,6 +23,7 @@ const AdminPage = lazy(() => import('./features/admin/AdminDashboard').then(modu
 export default function App() {
   return <AppLayout><Suspense fallback={<div className="route-loading">Carregando página…</div>}><Routes>
     <Route path="/" element={<HomePage />} />
+    <Route path="/reset-password" element={<ResetPasswordPage />} />
     <Route path="/profile" element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
     <Route path="/mapa" element={<MapPage />} />
     <Route path="/representantes" element={<PoliticiansPage />} />
